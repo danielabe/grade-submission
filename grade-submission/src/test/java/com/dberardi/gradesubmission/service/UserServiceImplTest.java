@@ -1,8 +1,6 @@
 package com.dberardi.gradesubmission.service;
 
 import com.dberardi.gradesubmission.exception.EntityNotFoundException;
-import com.dberardi.gradesubmission.exception.StudentNotFoundException;
-import com.dberardi.gradesubmission.model.Student;
 import com.dberardi.gradesubmission.model.User;
 import com.dberardi.gradesubmission.repository.UserRepository;
 import org.junit.Test;
@@ -12,13 +10,15 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplTest {

@@ -1,9 +1,8 @@
 package com.dberardi.gradesubmission.service;
 
-import com.dberardi.gradesubmission.exception.CourseNotFoundException;
-import com.dberardi.gradesubmission.exception.GradeNotFoundException;
+
+import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.exception.StudentNotEnrolledException;
-import com.dberardi.gradesubmission.exception.StudentNotFoundException;
 import com.dberardi.gradesubmission.model.Course;
 import com.dberardi.gradesubmission.model.Grade;
 import com.dberardi.gradesubmission.model.Student;
@@ -29,7 +28,7 @@ public class GradeServiceImpl implements GradeService {
     public Grade getGrade(Long courseId, Long studentId) {
         Optional<Grade> gradeOptional = gradeRepository.findByCourseIdAndStudentId(courseId, studentId);
         if(gradeOptional.isPresent()) return gradeOptional.get();
-        else throw new GradeNotFoundException(courseId, studentId);
+        else throw new EntityNotFoundException(courseId, studentId, Grade.class);
     }
 
     @Override
@@ -41,10 +40,10 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public Grade saveGrade(Grade grade, Long courseId, Long studentId) {
         Optional<Course> courseOptional = courseRepository.findById(courseId);
-        if(!courseOptional.isPresent()) throw new CourseNotFoundException(courseId);
+        if(!courseOptional.isPresent()) throw new EntityNotFoundException(courseId, Course.class);
 
         Optional<Student> studentOptional = studentRepository.findById(studentId);
-        if(!studentOptional.isPresent()) throw new StudentNotFoundException(studentId);
+        if(!studentOptional.isPresent()) throw new EntityNotFoundException(studentId, Student.class);
 
         System.out.println(studentOptional);
         System.out.println(courseOptional);
@@ -73,6 +72,6 @@ public class GradeServiceImpl implements GradeService {
     public List<Grade> getCourseGrades(Long courseId) {
         Optional<Course> courseOptional = courseRepository.findById(courseId);
         if(courseOptional.isPresent()) return courseOptional.get().getGrades();
-        else throw new CourseNotFoundException(courseId);
+        else throw new EntityNotFoundException(courseId, Course.class);
     }
 }

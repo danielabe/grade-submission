@@ -1,6 +1,6 @@
 package com.dberardi.gradesubmission.service;
 
-import com.dberardi.gradesubmission.exception.CourseNotFoundException;
+import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.model.Course;
 import com.dberardi.gradesubmission.model.Student;
 import com.dberardi.gradesubmission.repository.CourseRepository;
@@ -23,7 +23,7 @@ public class CourseServiceImpl implements CourseService {
     public Course getCourse(Long id) {
         Optional<Course> courseOptional = courseRepository.findById(id);
         if(courseOptional.isPresent()) return courseOptional.get();
-        else throw new CourseNotFoundException(id);
+        else throw new EntityNotFoundException(id, Course.class);
     }
 
     @Override

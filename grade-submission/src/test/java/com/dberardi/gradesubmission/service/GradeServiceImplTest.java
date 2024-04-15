@@ -1,9 +1,7 @@
 package com.dberardi.gradesubmission.service;
 
-import com.dberardi.gradesubmission.exception.CourseNotFoundException;
-import com.dberardi.gradesubmission.exception.GradeNotFoundException;
+import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.exception.StudentNotEnrolledException;
-import com.dberardi.gradesubmission.exception.StudentNotFoundException;
 import com.dberardi.gradesubmission.model.Course;
 import com.dberardi.gradesubmission.model.Grade;
 import com.dberardi.gradesubmission.model.Student;
@@ -23,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -61,7 +60,7 @@ public class GradeServiceImplTest {
 
     @Test
     public void getGradeNotFound() {
-        assertThrows(GradeNotFoundException.class, () -> gradeService.getGrade(0L,0L));
+        assertThrows(EntityNotFoundException.class, () -> gradeService.getGrade(0L,0L));
     }
 
     @Test
@@ -147,6 +146,6 @@ public class GradeServiceImplTest {
 
     @Test
     public void getCourseGradesCourseNotFound() {
-        assertThrows(CourseNotFoundException.class, () -> gradeService.getCourseGrades(0L));
+        assertThrows(EntityNotFoundException.class, () -> gradeService.getCourseGrades(0L));
     }
 }

@@ -1,7 +1,6 @@
 package com.dberardi.gradesubmission.service;
 
 import com.dberardi.gradesubmission.model.Grade;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 

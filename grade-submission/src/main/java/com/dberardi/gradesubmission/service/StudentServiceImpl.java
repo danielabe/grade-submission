@@ -1,13 +1,12 @@
 package com.dberardi.gradesubmission.service;
 
-import com.dberardi.gradesubmission.exception.StudentNotFoundException;
+import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.model.Course;
 import com.dberardi.gradesubmission.model.Grade;
 import com.dberardi.gradesubmission.model.Student;
 import com.dberardi.gradesubmission.repository.StudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +22,7 @@ public class StudentServiceImpl implements StudentService {
     public Student getStudent(Long id) {
         Optional<Student> studentOptional = studentRepository.findById(id);
         if(studentOptional.isPresent()) return studentOptional.get();
-        else throw new StudentNotFoundException(id);
+        else throw new EntityNotFoundException(id, Student.class);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.dberardi.gradesubmission.service;
 
-import com.dberardi.gradesubmission.exception.StudentNotFoundException;
+import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.model.Course;
 import com.dberardi.gradesubmission.model.Grade;
 import com.dberardi.gradesubmission.model.Student;
@@ -13,21 +13,21 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Collections;
+import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StudentServiceImplTest {
@@ -56,7 +56,7 @@ public class StudentServiceImplTest {
 //                new StudentNotFoundException(999999L)
 //        );
 
-        assertThrows(StudentNotFoundException.class, () -> studentService.getStudent(999999L));
+        assertThrows(EntityNotFoundException.class, () -> studentService.getStudent(999999L));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class StudentServiceImplTest {
     public void deleteStudentDoesNotExist() {
         when(studentRepository.findById(0L)).thenReturn(Optional.empty());
 
-        assertThrows(StudentNotFoundException.class, () -> studentService.deleteStudent(0L));
+        assertThrows(EntityNotFoundException.class, () -> studentService.deleteStudent(0L));
 
         verify(studentRepository, never()).deleteById(0L);
     }

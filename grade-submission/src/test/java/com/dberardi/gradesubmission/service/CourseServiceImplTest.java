@@ -1,9 +1,7 @@
 package com.dberardi.gradesubmission.service;
 
-import com.dberardi.gradesubmission.exception.CourseNotFoundException;
-import com.dberardi.gradesubmission.exception.GradeNotFoundException;
+import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.model.Course;
-import com.dberardi.gradesubmission.model.Grade;
 import com.dberardi.gradesubmission.model.Student;
 import com.dberardi.gradesubmission.repository.CourseRepository;
 import com.dberardi.gradesubmission.repository.StudentRepository;
@@ -14,20 +12,22 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
+import java.util.Optional;
 
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeastOnce;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CourseServiceImplTest {
@@ -53,7 +53,7 @@ public class CourseServiceImplTest {
 
     @Test
     public void getCourseNotFound() {
-        assertThrows(CourseNotFoundException.class, () -> courseService.getCourse(0L));
+        assertThrows(EntityNotFoundException.class, () -> courseService.getCourse(0L));
     }
 
     @Test

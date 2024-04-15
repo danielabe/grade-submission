@@ -363,12 +363,22 @@ class GradeSubmissionApplicationTests {
 
 	@Test
 	@Order(21)
-	public void testGetGrade_ExceptionHandling() throws Exception {
+	public void testGetGrade_ExceptionHandlingIdDoesNotExist() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/grade/99999")
 				.header("Authorization", SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	@Order(21)
+	public void testGetGrade_ExceptionHandling() throws Exception {
+		RequestBuilder request = MockMvcRequestBuilders.get("/grade/course/2/student/3")
+				.header("Authorization", SecurityConstants.BEARER + token);
+
+		mockMvc.perform(request)
+				.andExpect(status().is4xxClientError());
 	}
 
 	@Test
@@ -426,6 +436,21 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("score", null);
 
 		RequestBuilder request = MockMvcRequestBuilders.post("/grade/course/3/student/2")
+				.header("Authorization", SecurityConstants.BEARER + token)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson.toString());
+
+		mockMvc.perform(request)
+				.andExpect(status().is4xxClientError());
+	}
+
+	@Test
+	@Order(24)
+	public void testSaveGrade_FailStudentNotEnrolled() throws Exception {
+		JSONObject requestJson = new JSONObject();
+		requestJson.put("score", "B");
+
+		RequestBuilder request = MockMvcRequestBuilders.post("/grade/course/1/student/3")
 				.header("Authorization", SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
@@ -572,6 +597,23 @@ class GradeSubmissionApplicationTests {
 				.andExpect(status().is4xxClientError())
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(content().string("BAD REQUEST"));
+	}
+
+	@Test
+	@Order(30)
+	public void testAuthenticate_FailUserDoesNotExist() throws Exception {
+		JSONObject requestJson = new JSONObject();
+		requestJson.put("username", "Invalid username");
+		requestJson.put("password", user.getPassword());
+
+		RequestBuilder request = MockMvcRequestBuilders.post("/authenticate")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson.toString());
+
+		mockMvc.perform(request)
+				.andExpect(status().is4xxClientError())
+				.andExpect(content().string(not(emptyString())))
+				.andExpect(content().string("Username doesn't exist"));
 	}
 
 	@Test
