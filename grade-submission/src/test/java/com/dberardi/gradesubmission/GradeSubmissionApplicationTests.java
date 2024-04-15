@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
@@ -41,6 +42,8 @@ class GradeSubmissionApplicationTests {
 			.withSubject(user.getUsername())
 			.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.TOKEN_EXPIRATION))
 			.sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
+
+	String invalidToken = token + "e";
 
 	@Test
 	@Order(1)
@@ -520,5 +523,65 @@ class GradeSubmissionApplicationTests {
 				.andExpect(content().string("User"));
 	}
 
+	@Test
+	@Order(30)
+	public void testAuthenticate() throws Exception {
+		JSONObject requestJson = new JSONObject();
+		requestJson.put("username", user.getUsername());
+		requestJson.put("password", user.getPassword());
+
+		RequestBuilder request = MockMvcRequestBuilders.post("/authenticate")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson.toString());
+
+		mockMvc.perform(request)
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(content().string(emptyString()))
+				.andExpect(header().exists("Authorization"));
+	}
+
+	@Test
+	@Order(30)
+	public void testAuthenticate_Fail() throws Exception {
+		JSONObject requestJson = new JSONObject();
+		requestJson.put("username", user.getUsername());
+		requestJson.put("password", "invalidpass");
+
+		RequestBuilder request = MockMvcRequestBuilders.post("/authenticate")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson.toString());
+
+		mockMvc.perform(request)
+				.andExpect(status().is4xxClientError())
+				.andExpect(content().string(not(emptyString())))
+				.andExpect(content().string("You provided an incorrect password."));
+	}
+
+	@Test
+	@Order(30)
+	public void testAuthenticate_FailBadJson() throws Exception {
+		JSONObject requestJson = new JSONObject();
+		requestJson.put("user", user.getUsername());
+		requestJson.put("password", user.getPassword());
+
+		RequestBuilder request = MockMvcRequestBuilders.post("/authenticate")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson.toString());
+
+		mockMvc.perform(request)
+				.andExpect(status().is4xxClientError())
+				.andExpect(content().string(not(emptyString())))
+				.andExpect(content().string("BAD REQUEST"));
+	}
+
+	@Test
+	@Order(31)
+	public void testAuthorization_Fail() throws Exception {
+		RequestBuilder request = MockMvcRequestBuilders.get("/student/1")
+				.header("Authorization", SecurityConstants.BEARER + invalidToken);
+
+		mockMvc.perform(request)
+				.andExpect(status().is4xxClientError());
+	}
 
 }
