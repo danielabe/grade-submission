@@ -130,22 +130,6 @@ public class GradeServiceImplTest {
         verify(gradeRepository, atLeastOnce()).deleteByCourseIdAndStudentId(0L, 0L);
     }
 
-    @Test
-    public void getStudentGrades() {
-        Grade grade = new Grade(0L,"A",null,null);
-        Student student = new Student(0L, "Harry Potter", LocalDate.of(1980, 07, 31), new ArrayList<>(Arrays.asList(grade)), Collections.EMPTY_SET);
-
-        when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(student));
-
-        List<Grade> result = gradeService.getStudentGrades(0L);
-
-        assertEquals(1, result.size());
-    }
-
-    @Test
-    public void getStudentGradesStudentNotFound() {
-        assertThrows(StudentNotFoundException.class, () -> gradeService.getStudentGrades(0L));
-    }
 
     @Test
     public void getCourseGrades() {

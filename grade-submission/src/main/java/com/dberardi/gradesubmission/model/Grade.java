@@ -9,14 +9,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @RequiredArgsConstructor
 @Getter
 @Setter
@@ -29,6 +26,8 @@ public class Grade {
     @Column(name = "id")
     private Long id;
 
+    @NotBlank(message = "Score cannot be blank")
+    @NonNull
     @Column(name = "score", nullable = false)
     private String score;
 

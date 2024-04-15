@@ -11,6 +11,5 @@ public interface GradeService {
     Grade saveGrade(Grade grade, Long courseId, Long studentId);
     Grade updateGrade(Grade grade, Long courseId, Long studentId);
     void deleteGrade(Long courseId, Long studentId);
-    List<Grade> getStudentGrades(Long studentId);
     List<Grade> getCourseGrades(Long courseId);
 }

@@ -63,9 +63,14 @@ public class GradeSubmissionApplication implements CommandLineRunner {
 		}
 
 		courseService.enrollStudentToCourse(1L, 1L);
+		courseService.enrollStudentToCourse(2L, 2L);
+		courseService.enrollStudentToCourse(3L, 2L);
 
-		Grade grade = new Grade(1L, "A");
-		gradeService.saveGrade(grade, 1L, 1L);
+		Grade grade1 = new Grade(1L, "A");
+		gradeService.saveGrade(grade1, 1L, 1L);
+
+		Grade grade2 = new Grade(2L, "B");
+		gradeService.saveGrade(grade2, 2L, 2L);
 
 	}
 

@@ -70,13 +70,6 @@ public class GradeServiceImpl implements GradeService {
     }
 
     @Override
-    public List<Grade> getStudentGrades(Long studentId) {
-        Optional<Student> studentOptional = studentRepository.findById(studentId);
-        if(studentOptional.isPresent()) return studentOptional.get().getGrades();
-        else throw new StudentNotFoundException(studentId);
-    }
-
-    @Override
     public List<Grade> getCourseGrades(Long courseId) {
         Optional<Course> courseOptional = courseRepository.findById(courseId);
         if(courseOptional.isPresent()) return courseOptional.get().getGrades();
