@@ -5,10 +5,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.dberardi.gradesubmission.model.User;
 import com.dberardi.gradesubmission.security.SecurityConstants;
 import net.minidev.json.JSONObject;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -25,14 +26,21 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@Testcontainers
 class GradeSubmissionApplicationTests {
+
+	@Container
+	MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer("mysql:5.7.24")
+			.withDatabaseName("testdb")
+			.withUsername("user")
+			.withPassword("password")
+			.withInitScript("db/init.sql");
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -313,7 +321,7 @@ class GradeSubmissionApplicationTests {
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(jsonPath("$", hasSize(1)))
 				.andExpect(jsonPath("$[0].id").value(1))
-				.andExpect(jsonPath("$[0].name").value("Lily Potter"))
+				.andExpect(jsonPath("$[0].name").value("Harry Potter"))
 				.andExpect(jsonPath("$[0].birthDate").value("1980-07-31"));
 	}
 
