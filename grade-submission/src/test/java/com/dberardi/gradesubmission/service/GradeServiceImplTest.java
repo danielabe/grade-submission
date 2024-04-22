@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -98,7 +97,7 @@ public class GradeServiceImplTest {
     }
 
     @Test
-    public void studentNotEnrolled() {
+    public void saveGradeStudentNotEnrolled() {
         Course course = new Course("Course1", "CODE1", "Description");
         Student student = new Student(0L, "Harry Potter", LocalDate.of(1980, 07, 31), Collections.EMPTY_LIST, Collections.EMPTY_SET);
 

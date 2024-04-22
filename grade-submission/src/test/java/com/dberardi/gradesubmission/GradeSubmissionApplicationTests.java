@@ -74,7 +74,7 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
-	public void testGetStudent_Fail() throws Exception {
+	public void testGetStudentNotFound_Fail() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/student/99999")
 				.header("Authorization", SecurityConstants.BEARER + token);
 
@@ -130,7 +130,7 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
-	public void testSaveStudent_Fail() throws Exception {
+	public void testSaveStudentBadRequest_Fail() throws Exception {
 		JSONObject requestJson = new JSONObject();
 		requestJson.put("name", null);
 		requestJson.put("birthDate", LocalDate.of(1981, 2, 13).toString());
@@ -239,7 +239,7 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
-	public void testGetCourse_Fail() throws Exception {
+	public void testGetCourseNotFound_Fail() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/course/99999")
 				.header("Authorization", SecurityConstants.BEARER + token);
 
@@ -286,7 +286,7 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
-	public void testSaveCourse_Fail() throws Exception {
+	public void testSaveCourseBadRequest_Fail() throws Exception {
 		JSONObject requestJson = new JSONObject();
 		requestJson.put("subject", null);
 		requestJson.put("code", "CODE5");
@@ -445,7 +445,7 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
-	public void testSaveGrade_Fail() throws Exception {
+	public void testSaveGradeBadRequest_Fail() throws Exception {
 		JSONObject requestJson = new JSONObject();
 		requestJson.put("score", null);
 
@@ -589,7 +589,7 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
-	public void testAuthorization_Fail() throws Exception {
+	public void testAuthorizationInvalidToken_Fail() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/student/1")
 				.header("Authorization", SecurityConstants.BEARER + invalidToken);
 
