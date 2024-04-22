@@ -96,7 +96,7 @@ public class CourseController {
 
     @Operation(summary = "Get enrolled students", description = "Provides a list of all students enrolled to a course")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful retrieval of enrolled students", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))),
+            @ApiResponse(responseCode = "200", description = "Successful retrieval of enrolled students", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class)))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
