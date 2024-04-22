@@ -23,6 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.util.Date;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
@@ -564,6 +565,24 @@ class GradeSubmissionApplicationTests {
 
 		mockMvc.perform(request)
 				.andExpect(status().is4xxClientError());
+	}
+
+	@Test
+	public void TestSaveStudentWithNotValidArgument_Fail() throws Exception {
+		JSONObject requestJson = new JSONObject();
+		requestJson.put("name", "");
+		requestJson.put("birthDate", LocalDate.of(1981, 2, 13).toString());
+
+		RequestBuilder request = MockMvcRequestBuilders.post("/student")
+				.header("Authorization", SecurityConstants.BEARER + token)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson.toString());
+
+		mockMvc.perform(request)
+				.andExpect(status().is4xxClientError())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().string(not(emptyString())))
+				.andExpect(jsonPath("$.message[0]").value("Name cannot be blank"));
 	}
 
 }
