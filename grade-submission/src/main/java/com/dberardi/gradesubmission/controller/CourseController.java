@@ -38,8 +38,10 @@ public class CourseController {
 
     @Operation(summary = "Get course based by ID", description = "Returns a course based on an ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "200", description = "Successful retrieval of course", content = @Content(schema = @Schema(implementation = Course.class))),
+            @ApiResponse(responseCode = "400", description = "Failed to convert type", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Course> getCourse(@PathVariable Long id) {
@@ -47,40 +49,71 @@ public class CourseController {
     }
 
     @Operation(summary = "Retrieves courses", description = "Provides a list of all courses")
-    @ApiResponse(responseCode = "200", description = "Successful retrieval of courses", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class))))
-    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval of courses", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+    })
+    @GetMapping(value = "all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Course>> getCourses() {
         return new ResponseEntity<>(courseService.getCourses(), HttpStatus.OK);
     }
 
     @Operation(summary = "Create course", description = "Creates a course from the provided payload")
-    @PostMapping
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Successful course creation", content = @Content(schema = @Schema(implementation = Course.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+    })
+    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Course> saveCourse(@Valid @RequestBody Course course) {
         return new ResponseEntity<>(courseService.saveCourse(course),HttpStatus.CREATED);
     }
 
     @Operation(summary = "Update course", description = "Updates a course from the provided payload")
-    @PutMapping("{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful course modification", content = @Content(schema = @Schema(implementation = Course.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+    })
+    @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Course> updateCourse(@Valid @RequestBody Course course, @PathVariable Long id) {
         return new ResponseEntity<>(courseService.updateCourse(course, id), HttpStatus.OK);
     }
 
     @Operation(summary = "Delete course", description = "Deletes a course based on an ID")
-    @DeleteMapping("/{id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Successful course removal", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @DeleteMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpStatus> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "Get enrolled students", description = "Provides a list of all students enrolled to a course")
-    @GetMapping("{id}/students")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval of enrolled students", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping(value = "{id}/students", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Student>> getEnrolledStudents(@PathVariable Long id) {
         return new ResponseEntity<>(courseService.getEnrolledStudents(id), HttpStatus.OK);
     }
 
     @Operation(summary = "Enroll a student", description = "Enrolls a student to a course")
-    @PutMapping("{courseId}/student/{studentId}")
-    public ResponseEntity<Course> enrollStudentToCourse(@PathVariable Long courseId, @PathVariable Long studentId) { //no se porque devuelve course
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful enrollment", content = @Content(schema = @Schema(implementation = Course.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Course or student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PutMapping(value = "{courseId}/student/{studentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Course> enrollStudentToCourse(@PathVariable Long courseId, @PathVariable Long studentId) {
         return new ResponseEntity<>(courseService.enrollStudentToCourse(courseId, studentId), HttpStatus.OK);
     }
 
