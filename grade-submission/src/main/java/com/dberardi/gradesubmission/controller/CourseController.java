@@ -36,7 +36,7 @@ public class CourseController {
 
     CourseService courseService;
 
-    @Operation(summary = "Get course based by ID", description = "Returns a course based on an ID")
+    @Operation(summary = "Get course based on ID", description = "Returns a course based on an ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval of course", content = @Content(schema = @Schema(implementation = Course.class))),
             @ApiResponse(responseCode = "400", description = "Failed to convert type", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -74,6 +74,7 @@ public class CourseController {
             @ApiResponse(responseCode = "200", description = "Successful course modification", content = @Content(schema = @Schema(implementation = Course.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Course> updateCourse(@Valid @RequestBody Course course, @PathVariable Long id) {
