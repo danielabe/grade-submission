@@ -1,18 +1,25 @@
+-- Drop tables if they exist
+DROP TABLE IF EXISTS grade;
+DROP TABLE IF EXISTS course_student;
+DROP TABLE IF EXISTS course;
+DROP TABLE IF EXISTS student;
+DROP TABLE IF EXISTS users;
+
 -- Create tables
-CREATE TABLE IF NOT EXISTS student (
-    id INT PRIMARY KEY,
+CREATE TABLE student (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
     birth_date DATE
 );
 
-CREATE TABLE IF NOT EXISTS course (
-    id INT PRIMARY KEY,
+CREATE TABLE course (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     subject VARCHAR(255),
     code VARCHAR(255),
     description VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS course_student (
+CREATE TABLE course_student (
     student_id INT,
     course_id INT,
     PRIMARY KEY (student_id, course_id),
@@ -20,8 +27,8 @@ CREATE TABLE IF NOT EXISTS course_student (
     FOREIGN KEY (course_id) REFERENCES course(id)
 );
 
-CREATE TABLE IF NOT EXISTS grade (
-    id INT PRIMARY KEY,
+CREATE TABLE grade (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     score VARCHAR(10),
     course_id INT,
     student_id INT,
@@ -29,12 +36,11 @@ CREATE TABLE IF NOT EXISTS grade (
     FOREIGN KEY (student_id) REFERENCES student(id)
 );
 
-CREATE TABLE IF NOT EXISTS users (
-    id INT PRIMARY KEY,
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255),
     password VARCHAR(255)
 );
-
 
 -- Insert students
 INSERT INTO student (id, name, birth_date) VALUES
