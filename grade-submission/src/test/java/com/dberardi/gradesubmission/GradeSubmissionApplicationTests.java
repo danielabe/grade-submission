@@ -83,6 +83,18 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
+	public void testGetStudentWithNotValidType_Fail() throws Exception {
+		RequestBuilder request = MockMvcRequestBuilders.get("/student/a")
+				.header("Authorization", SecurityConstants.BEARER + token);
+
+		mockMvc.perform(request)
+				.andExpect(status().is4xxClientError())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().string(not(emptyString())))
+				.andExpect(jsonPath("$.message[0]").value(containsString("Failed to convert")));
+	}
+
+	@Test
 	public void testGetStudents_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/student/all")
 				.header("Authorization", SecurityConstants.BEARER + token);
@@ -130,6 +142,24 @@ class GradeSubmissionApplicationTests {
 
 		mockMvc.perform(request)
 				.andExpect(status().is4xxClientError());
+	}
+
+	@Test
+	public void TestSaveStudentWithNotValidArgument_Fail() throws Exception {
+		JSONObject requestJson = new JSONObject();
+		requestJson.put("name", "");
+		requestJson.put("birthDate", LocalDate.of(1981, 2, 13).toString());
+
+		RequestBuilder request = MockMvcRequestBuilders.post("/student")
+				.header("Authorization", SecurityConstants.BEARER + token)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson.toString());
+
+		mockMvc.perform(request)
+				.andExpect(status().is4xxClientError())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().string(not(emptyString())))
+				.andExpect(jsonPath("$.message[0]").value("Name cannot be blank"));
 	}
 
 	@Test
@@ -565,24 +595,6 @@ class GradeSubmissionApplicationTests {
 
 		mockMvc.perform(request)
 				.andExpect(status().is4xxClientError());
-	}
-
-	@Test
-	public void TestSaveStudentWithNotValidArgument_Fail() throws Exception {
-		JSONObject requestJson = new JSONObject();
-		requestJson.put("name", "");
-		requestJson.put("birthDate", LocalDate.of(1981, 2, 13).toString());
-
-		RequestBuilder request = MockMvcRequestBuilders.post("/student")
-				.header("Authorization", SecurityConstants.BEARER + token)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(requestJson.toString());
-
-		mockMvc.perform(request)
-				.andExpect(status().is4xxClientError())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(content().string(not(emptyString())))
-				.andExpect(jsonPath("$.message[0]").value("Name cannot be blank"));
 	}
 
 }
