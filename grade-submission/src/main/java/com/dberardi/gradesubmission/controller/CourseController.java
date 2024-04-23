@@ -114,8 +114,9 @@ public class CourseController {
             @ApiResponse(responseCode = "404", description = "Course or student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PutMapping(value = "{courseId}/student/{studentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Course> enrollStudentToCourse(@PathVariable Long courseId, @PathVariable Long studentId) {
-        return new ResponseEntity<>(courseService.enrollStudentToCourse(courseId, studentId), HttpStatus.OK);
+    public ResponseEntity<HttpStatus> enrollStudentToCourse(@PathVariable Long courseId, @PathVariable Long studentId) {
+        courseService.enrollStudentToCourse(courseId, studentId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(summary = "Unenroll a student", description = "Unenrolls a student from a course")
@@ -126,8 +127,9 @@ public class CourseController {
             @ApiResponse(responseCode = "404", description = "Course or student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PutMapping(value = "{courseId}/student/{studentId}/unenroll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Course> unenrollStudentFromCourse(@PathVariable Long courseId, @PathVariable Long studentId) {
-        return new ResponseEntity<>(courseService.unenrollStudentFromCourse(courseId, studentId), HttpStatus.OK);
+    public ResponseEntity<HttpStatus> unenrollStudentFromCourse(@PathVariable Long courseId, @PathVariable Long studentId) {
+        courseService.unenrollStudentFromCourse(courseId, studentId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

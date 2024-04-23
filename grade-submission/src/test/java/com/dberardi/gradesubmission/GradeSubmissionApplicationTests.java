@@ -327,8 +327,7 @@ class GradeSubmissionApplicationTests {
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(content().string(not(emptyString())));
+				.andExpect(content().string(emptyString()));
 	}
 
 	@Test
@@ -338,8 +337,7 @@ class GradeSubmissionApplicationTests {
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(content().string(not(emptyString())));
+				.andExpect(content().string(emptyString()));
 	}
 
 	@Test
