@@ -4,7 +4,6 @@ import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.model.Course;
 import com.dberardi.gradesubmission.model.Student;
 import com.dberardi.gradesubmission.repository.CourseRepository;
-import com.dberardi.gradesubmission.repository.StudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,7 @@ import java.util.Set;
 public class CourseServiceImpl implements CourseService {
 
     CourseRepository courseRepository;
-    StudentRepository studentRepository;
+    StudentServiceImpl studentService;
 
     @Override
     public Course getCourse(Long id) {
@@ -59,8 +58,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course enrollStudentToCourse(Long courseId, Long studentId) {
         Course course = getCourse(courseId);
-        Optional<Student> studentOptional = studentRepository.findById(studentId);
-        if(studentOptional.isPresent()) course.getStudents().add(studentOptional.get()); //falta else con exception, AGREGAR el curso al estudiante?
+        Student student = studentService.getStudent(studentId);
+        course.getStudents().add(student);
         return courseRepository.save(course);
     }
 }
