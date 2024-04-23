@@ -14,4 +14,5 @@ public interface CourseService {
     void deleteCourse(Long id);
     Set<Student> getEnrolledStudents(Long id);
     Course enrollStudentToCourse(Long courseId, Long studentId);
+    Course unenrollStudentFromCourse(Long courseId, Long studentId);
 }

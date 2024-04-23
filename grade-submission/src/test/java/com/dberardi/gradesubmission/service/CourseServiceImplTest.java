@@ -22,6 +22,7 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
@@ -36,6 +37,9 @@ public class CourseServiceImplTest {
 
     @Mock
     private StudentRepository studentRepository;
+
+    @Mock
+    private StudentServiceImpl studentService;
 
     @InjectMocks
     private CourseServiceImpl courseService;
@@ -123,15 +127,40 @@ public class CourseServiceImplTest {
 
     @Test
     public void enrollStudentToCourse() {
-        Student student = new Student(0L, "Harry Potter", LocalDate.of(1980, 07, 31), Collections.EMPTY_LIST, Collections.EMPTY_SET);
-        Course course = new Course(0L, "Subject1", "CODE1", "Description1", Collections.EMPTY_LIST, new HashSet<>());
+        Student student = new Student(0L, "Harry Potter", LocalDate.of(1980, 7, 31), Collections.emptyList(), Collections.emptySet());
+        Course course = new Course(0L, "Subject1", "CODE1", "Description1", Collections.emptyList(), new HashSet<>());
 
         when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(course));
-        when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(student));
-        when(courseRepository.save(any(Course.class))).thenReturn(course);
+        when(studentService.getStudent(any(Long.class))).thenReturn(student);
+        when(courseRepository.save(any(Course.class))).thenAnswer(invocation -> {
+            Course savedCourse = invocation.getArgument(0);
+            savedCourse.getStudents().add(student);
+            return savedCourse;
+        });
 
         Course result = courseService.enrollStudentToCourse(0L, 0L);
 
         assertTrue(result.getStudents().contains(student));
     }
+
+    @Test
+    public void unenrollStudentFromCourse() {
+        Student student = new Student(0L, "Hermione Granger", LocalDate.of(1979, 9, 19), Collections.emptyList(), Collections.emptySet());
+        Course course = new Course(0L, "Subject2", "CODE2", "Description2", Collections.emptyList(), new HashSet<>());
+
+        course.getStudents().add(student);
+
+        when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(course));
+        when(studentService.getStudent(any(Long.class))).thenReturn(student);
+        when(courseRepository.save(any(Course.class))).thenAnswer(invocation -> {
+            Course savedCourse = invocation.getArgument(0);
+            savedCourse.getStudents().remove(student);
+            return savedCourse;
+        });
+
+        Course result = courseService.unenrollStudentFromCourse(0L, 0L);
+
+        assertFalse(result.getStudents().contains(student));
+    }
+
 }

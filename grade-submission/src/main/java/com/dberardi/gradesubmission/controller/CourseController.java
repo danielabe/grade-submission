@@ -118,4 +118,16 @@ public class CourseController {
         return new ResponseEntity<>(courseService.enrollStudentToCourse(courseId, studentId), HttpStatus.OK);
     }
 
+    @Operation(summary = "Unenroll a student", description = "Unenrolls a student from a course")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful unenrollment", content = @Content(schema = @Schema(implementation = Course.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Course or student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PutMapping(value = "{courseId}/student/{studentId}/unenroll", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Course> unenrollStudentFromCourse(@PathVariable Long courseId, @PathVariable Long studentId) {
+        return new ResponseEntity<>(courseService.unenrollStudentFromCourse(courseId, studentId), HttpStatus.OK);
+    }
+
 }

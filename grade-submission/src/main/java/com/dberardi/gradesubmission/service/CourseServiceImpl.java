@@ -62,4 +62,12 @@ public class CourseServiceImpl implements CourseService {
         course.getStudents().add(student);
         return courseRepository.save(course);
     }
+
+    @Override
+    public Course unenrollStudentFromCourse(Long courseId, Long studentId) {
+        Course course = getCourse(courseId);
+        Student student = studentService.getStudent(studentId);
+        course.getStudents().remove(student);
+        return courseRepository.save(course);
+    }
 }

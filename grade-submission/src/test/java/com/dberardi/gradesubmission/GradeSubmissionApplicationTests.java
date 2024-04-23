@@ -332,6 +332,17 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
+	public void testUnenrollStudentFromCourse_Success() throws Exception {
+		RequestBuilder request = MockMvcRequestBuilders.put("/course/1/student/1/unenroll")
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);;
+
+		mockMvc.perform(request)
+				.andExpect(status().is2xxSuccessful())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().string(not(emptyString())));
+	}
+
+	@Test
 	public void testGetEnrolledStudents_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/course/1/students")
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);;
