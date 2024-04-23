@@ -63,6 +63,7 @@ public class CourseController {
             @ApiResponse(responseCode = "201", description = "Successful course creation", content = @Content(schema = @Schema(implementation = Course.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Course> saveCourse(@Valid @RequestBody Course course) {
@@ -108,10 +109,11 @@ public class CourseController {
 
     @Operation(summary = "Enroll a student", description = "Enrolls a student to a course")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful enrollment", content = @Content(schema = @Schema(implementation = Course.class))),
+            @ApiResponse(responseCode = "200", description = "Successful enrollment", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Course or student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Student already enrolled", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PutMapping(value = "{courseId}/student/{studentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpStatus> enrollStudentToCourse(@PathVariable Long courseId, @PathVariable Long studentId) {
