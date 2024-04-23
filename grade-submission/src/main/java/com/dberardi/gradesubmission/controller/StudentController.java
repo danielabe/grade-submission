@@ -100,7 +100,7 @@ public class StudentController {
             @ApiResponse(responseCode = "200", description = "Successful recovery of courses in which the student is enrolled", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping(value =  "{id}/courses", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Course>> getEnrolledCourses(@PathVariable Long id) {
