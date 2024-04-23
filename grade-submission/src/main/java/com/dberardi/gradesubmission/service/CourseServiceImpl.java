@@ -1,5 +1,6 @@
 package com.dberardi.gradesubmission.service;
 
+import com.dberardi.gradesubmission.exception.EntityAlreadyExistsException;
 import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.model.Course;
 import com.dberardi.gradesubmission.model.Student;
@@ -32,6 +33,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course saveCourse(Course course) {
+        if(getCourses().stream().anyMatch(existingCourse -> existingCourse.getCode().equals(course.getCode()))) {
+            throw new EntityAlreadyExistsException("Code already exists");
+        }
         return courseRepository.save(course);
     }
 

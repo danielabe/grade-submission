@@ -1,5 +1,6 @@
 package com.dberardi.gradesubmission.service;
 
+import com.dberardi.gradesubmission.exception.EntityAlreadyExistsException;
 import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.model.User;
 import com.dberardi.gradesubmission.repository.UserRepository;
@@ -30,6 +31,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
+        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
+        if (existingUser.isPresent()) {
+            throw new EntityAlreadyExistsException("Username already exists");
+        }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
