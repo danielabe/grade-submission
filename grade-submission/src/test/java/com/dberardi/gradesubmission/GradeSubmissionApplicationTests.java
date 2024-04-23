@@ -6,6 +6,7 @@ import com.dberardi.gradesubmission.model.User;
 import com.dberardi.gradesubmission.security.SecurityConstants;
 import jakarta.transaction.Transactional;
 import net.minidev.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -46,13 +47,20 @@ class GradeSubmissionApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 
-	User user = new User("User", "password123");
-	String token = JWT.create()
-			.withSubject(user.getUsername())
-			.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.TOKEN_EXPIRATION))
-			.sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
+	private String token;
+	private String invalidToken;
+	private User user;
 
-	String invalidToken = token + "e";
+	@BeforeEach
+	public void setUp() {
+		user = new User("User", "password123");
+		token = JWT.create()
+				.withSubject(user.getUsername())
+				.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.TOKEN_EXPIRATION))
+				.sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
+
+		invalidToken = token + "e";
+	}
 
 	@Test
 	void contextLoads() {
@@ -62,7 +70,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetStudent_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/student/1")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -76,7 +84,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetStudentNotFound_Fail() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/student/99999")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().isNotFound());
@@ -85,7 +93,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetStudentWithNotValidType_Fail() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/student/a")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is4xxClientError())
@@ -97,7 +105,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetStudents_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/student/all")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -116,7 +124,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("birthDate", LocalDate.of(1981, 2, 13).toString());
 
 		RequestBuilder request = MockMvcRequestBuilders.post("/student")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -136,7 +144,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("birthDate", LocalDate.of(1981, 2, 13).toString());
 
 		RequestBuilder request = MockMvcRequestBuilders.post("/student")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -151,7 +159,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("birthDate", LocalDate.of(1981, 2, 13).toString());
 
 		RequestBuilder request = MockMvcRequestBuilders.post("/student")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -165,7 +173,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testDeleteStudent_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.delete("/student/3")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -176,7 +184,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetStudentCourses_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/student/1/courses")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -191,7 +199,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetGradesByStudentId_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/student/1/grades")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -210,7 +218,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("birthDate", LocalDate.of(1980, 7, 31).toString());
 
 		RequestBuilder request = MockMvcRequestBuilders.put("/student/1")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -226,7 +234,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetCourse_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/course/1")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -241,7 +249,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetCourseNotFound_Fail() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/course/99999")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().isNotFound());
@@ -250,7 +258,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetCourses_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/course/all")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -271,7 +279,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("description", "Description4");
 
 		RequestBuilder request = MockMvcRequestBuilders.post("/course")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -293,7 +301,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("description", "Description5");
 
 		RequestBuilder request = MockMvcRequestBuilders.post("/course")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -304,7 +312,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testDeleteCourse_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.delete("/course/3")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -315,7 +323,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testEnrollStudentToCourse_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.put("/course/1/student/3")
-				.header("Authorization", SecurityConstants.BEARER + token);;
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);;
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -326,7 +334,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetEnrolledStudents_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/course/1/students")
-				.header("Authorization", SecurityConstants.BEARER + token);;
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);;
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -346,7 +354,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("description", "Description5");
 
 		RequestBuilder request = MockMvcRequestBuilders.put("/course/1")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -363,7 +371,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetGrade_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/grade/course/1/student/1")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -383,7 +391,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetGradeDoesNotExistId_Fail() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/grade/99999")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().isNotFound());
@@ -392,7 +400,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetGradeDoesNotExist_Fail() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/grade/course/2/student/3")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is4xxClientError());
@@ -401,7 +409,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetGrades_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/grade/all")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -425,7 +433,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("score", "B");
 
 		RequestBuilder request = MockMvcRequestBuilders.post("/grade/course/2/student/3")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -450,7 +458,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("score", null);
 
 		RequestBuilder request = MockMvcRequestBuilders.post("/grade/course/2/student/3")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -464,7 +472,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("score", "B");
 
 		RequestBuilder request = MockMvcRequestBuilders.post("/grade/course/1/student/3")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -475,7 +483,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testDeleteGrade_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.delete("/grade/course/1/student/1")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -486,7 +494,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetCourseGrades_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/grade/course/1")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -510,7 +518,7 @@ class GradeSubmissionApplicationTests {
 		requestJson.put("score", "F");
 
 		RequestBuilder request = MockMvcRequestBuilders.put("/grade/course/2/student/2")
-				.header("Authorization", SecurityConstants.BEARER + token)
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson.toString());
 
@@ -547,7 +555,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testGetUser_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/user/1")
-				.header("Authorization", SecurityConstants.BEARER + token);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
 				.andExpect(status().is2xxSuccessful())
@@ -591,7 +599,7 @@ class GradeSubmissionApplicationTests {
 	@Test
 	public void testAuthorizationInvalidToken_Fail() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/student/1")
-				.header("Authorization", SecurityConstants.BEARER + invalidToken);
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + invalidToken);
 
 		mockMvc.perform(request)
 				.andExpect(status().is4xxClientError());

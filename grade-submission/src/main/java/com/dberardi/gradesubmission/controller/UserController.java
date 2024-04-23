@@ -36,7 +36,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             //@ApiResponse(responseCode = "404", description = "User doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("{id}")
     public ResponseEntity<String> findById(@PathVariable Long id) {
         return new ResponseEntity<>(userService.getUser(id).getUsername(), HttpStatus.OK);
     }
@@ -46,7 +46,7 @@ public class UserController {
             @ApiResponse(responseCode = "201", description = "Successful user creation", content = @Content),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PostMapping(value = "register", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "register")
     public ResponseEntity<HttpStatus> createUser(@Valid @RequestBody User user) {
         userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
