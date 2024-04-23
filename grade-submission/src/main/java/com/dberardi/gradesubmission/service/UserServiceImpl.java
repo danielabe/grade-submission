@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,8 +32,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
-        Optional<User> existingUser = userRepository.findByUsername(user.getUsername());
-        if (existingUser.isPresent()) {
+        if(((List<User>) userRepository.findAll()).stream().anyMatch(existingUser -> existingUser.getUsername().equals(user.getUsername()))) {
             throw new EntityAlreadyExistsException("Username already exists");
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));

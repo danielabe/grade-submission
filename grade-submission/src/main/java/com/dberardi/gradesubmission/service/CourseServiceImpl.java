@@ -63,6 +63,9 @@ public class CourseServiceImpl implements CourseService {
     public Course enrollStudentToCourse(Long courseId, Long studentId) {
         Course course = getCourse(courseId);
         Student student = studentService.getStudent(studentId);
+        if(getEnrolledStudents(courseId).contains(student)) {
+            throw new EntityAlreadyExistsException("Student already enrolled");
+        }
         course.getStudents().add(student);
         return courseRepository.save(course);
     }

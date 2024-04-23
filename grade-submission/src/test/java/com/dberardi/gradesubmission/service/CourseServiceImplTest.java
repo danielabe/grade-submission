@@ -1,5 +1,6 @@
 package com.dberardi.gradesubmission.service;
 
+import com.dberardi.gradesubmission.exception.EntityAlreadyExistsException;
 import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.model.Course;
 import com.dberardi.gradesubmission.model.Student;
@@ -20,9 +21,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
@@ -88,6 +89,16 @@ public class CourseServiceImplTest {
     }
 
     @Test
+    public void saveCourseRepeatedCode() {
+        Course course = new Course("Subject1", "CODE1","Description1");
+        List<Course> courses = Arrays.asList(course);
+
+        when(courseService.getCourses()).thenReturn(courses);
+
+        assertThrows(EntityAlreadyExistsException.class, () -> courseService.saveCourse(course));
+    }
+
+    @Test
     public void updateCourse() {
         Course oldCourse = new Course("Subject1", "CODE1", "Description1");
         Course newCourse = new Course("Subject2", "CODE2", "Description2");
@@ -141,6 +152,19 @@ public class CourseServiceImplTest {
         Course result = courseService.enrollStudentToCourse(0L, 0L);
 
         assertTrue(result.getStudents().contains(student));
+    }
+
+    @Test
+    public void enrollStudentToCourseAlreadyEnrolled() {
+        Student student = new Student(0L, "Harry Potter", LocalDate.of(1980, 7, 31), Collections.emptyList(), Collections.emptySet());
+        Course course = new Course(0L, "Subject1", "CODE1", "Description1", Collections.emptyList(), new HashSet<>());
+
+        course.getStudents().add(student);
+
+        when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(course));
+        when(studentService.getStudent(any(Long.class))).thenReturn(student);
+
+        assertThrows(EntityAlreadyExistsException.class, () -> courseService.enrollStudentToCourse(0L, 0L));
     }
 
     @Test

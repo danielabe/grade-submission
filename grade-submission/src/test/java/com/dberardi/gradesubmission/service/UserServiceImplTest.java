@@ -1,5 +1,6 @@
 package com.dberardi.gradesubmission.service;
 
+import com.dberardi.gradesubmission.exception.EntityAlreadyExistsException;
 import com.dberardi.gradesubmission.exception.EntityNotFoundException;
 import com.dberardi.gradesubmission.model.User;
 import com.dberardi.gradesubmission.repository.UserRepository;
@@ -10,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -69,6 +72,16 @@ public class UserServiceImplTest {
 
         verify(userRepository, times(1)).save(any(User.class));
         assertEquals("User", result.getUsername());
+    }
+
+    @Test
+    public void saveUserRepeatedUsername() {
+        User user = new User("User", "pass123");
+        List<User> users = Arrays.asList(user);
+
+        when(userRepository.findAll()).thenReturn(users);
+
+        assertThrows(EntityAlreadyExistsException.class, () -> userService.saveUser(user));
     }
 
     @Test
