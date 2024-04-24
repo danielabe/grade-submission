@@ -115,6 +115,18 @@ public class CourseServiceImplTest {
     }
 
     @Test
+    public void updateCourseRepeatedCode() {
+        Course course1 = new Course(0L, "Subject1", "CODE1", "Description1", Collections.emptyList(), new HashSet<>());
+        Course course2 = new Course(1L, "Subject2", "CODE2", "Description2", Collections.emptyList(), new HashSet<>());
+        List<Course> courses = Arrays.asList(course1, course2);
+
+        when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(course1));
+        when(courseService.getCourses()).thenReturn(courses);
+
+        assertThrows(EntityAlreadyExistsException.class, () -> courseService.updateCourse(course2, 0L));
+    }
+
+    @Test
     public void deleteCourse() {
         Course course =  new Course("Subject1", "CODE1", "Description1");
         when(courseRepository.findById(any(Long.class))).thenReturn(Optional.of(course));

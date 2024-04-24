@@ -42,6 +42,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course updateCourse(Course newCourse, Long id) {
         Course course = getCourse(id);
+        if(getCourses().stream().anyMatch(existingCourse ->
+                !existingCourse.getId().equals(id) &&
+                existingCourse.getCode().equals(newCourse.getCode()))) {
+            throw new EntityAlreadyExistsException("Code already exists");
+        }
         course.setCode(newCourse.getCode());
         course.setSubject(newCourse.getSubject());
         course.setDescription(newCourse.getDescription());

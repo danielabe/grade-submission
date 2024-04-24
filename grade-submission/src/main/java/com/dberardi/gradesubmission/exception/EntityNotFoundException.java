@@ -7,7 +7,7 @@ public class EntityNotFoundException extends RuntimeException {
     }
 
     public EntityNotFoundException(Long courseId, Long studentId, Class<?> entity) {
-        super("The " + entity.getSimpleName().toLowerCase() + "with courseId '" + courseId + "' and studentId '" + studentId + "' does not exist in our records");
+        super("The " + entity.getSimpleName().toLowerCase() + " with courseId '" + courseId + "' and studentId '" + studentId + "' does not exist in our records");
     }
 
 }

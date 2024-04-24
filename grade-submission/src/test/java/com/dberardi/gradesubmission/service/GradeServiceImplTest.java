@@ -108,17 +108,6 @@ public class GradeServiceImplTest {
     }
 
     @Test
-    public void updateGrade() {
-        Grade grade =  new Grade(0L,"A",null,null);
-        when(gradeRepository.findByCourseIdAndStudentId(0L, 0L)).thenReturn(Optional.of(grade));
-
-        grade.setScore("F");
-        gradeService.updateGrade(grade, 0L, 0l);
-
-        verify(gradeRepository, times(1)).save(grade);
-    }
-
-    @Test
     public void deleteGrade() {
         Grade grade =  new Grade(0L,"A",null,null);
         when(gradeRepository.findByCourseIdAndStudentId(any(Long.class), any(Long.class))).thenReturn(Optional.of(grade));

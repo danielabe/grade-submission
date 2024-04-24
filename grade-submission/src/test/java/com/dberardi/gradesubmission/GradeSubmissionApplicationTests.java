@@ -196,7 +196,7 @@ class GradeSubmissionApplicationTests {
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
-				.andExpect(status().is2xxSuccessful())
+				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(jsonPath("$[0].id").value(1))
@@ -221,7 +221,7 @@ class GradeSubmissionApplicationTests {
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
-				.andExpect(status().is2xxSuccessful())
+				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(jsonPath("$[0].id").value(1))
@@ -468,7 +468,7 @@ class GradeSubmissionApplicationTests {
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);;
 
 		mockMvc.perform(request)
-				.andExpect(status().is2xxSuccessful())
+				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(jsonPath("$", hasSize(1)))
@@ -547,6 +547,24 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
+	public void testUpdateCourseRepeatedCode_Fail() throws Exception {
+		JSONObject requestJson = new JSONObject();
+		requestJson.put("subject", "Subject2");
+		requestJson.put("code", "CODE2");
+		requestJson.put("description", "Description2");
+
+		RequestBuilder request = MockMvcRequestBuilders.put("/course/1")
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson.toString());
+
+		mockMvc.perform(request)
+				.andExpect(status().isConflict())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().string(not(emptyString())));
+	}
+
+	@Test
 	public void testGetGrade_Success() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/grade/course/1/student/1")
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
@@ -567,17 +585,6 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
-	public void testGetGradeDoesNotExistId_Fail() throws Exception {
-		RequestBuilder request = MockMvcRequestBuilders.get("/grade/99999")
-				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
-
-		mockMvc.perform(request)
-				.andExpect(status().isNotFound())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(content().string(not(emptyString())));
-	}
-
-	@Test
 	public void testGetGradeDoesNotExist_Fail() throws Exception {
 		RequestBuilder request = MockMvcRequestBuilders.get("/grade/course/2/student/3")
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
@@ -592,7 +599,7 @@ class GradeSubmissionApplicationTests {
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
-				.andExpect(status().is2xxSuccessful())
+				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(jsonPath("$", hasSize(2)))
@@ -633,7 +640,7 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
-	public void testSaveGradeBadRequest_Fail() throws Exception {
+	public void testSaveGradeScoreNull_Fail() throws Exception {
 		JSONObject requestJson = new JSONObject();
 		requestJson.put("score", null);
 
@@ -643,7 +650,25 @@ class GradeSubmissionApplicationTests {
 				.content(requestJson.toString());
 
 		mockMvc.perform(request)
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().string(not(emptyString())));
+	}
+
+	@Test
+	public void testSaveGradeNotFound_Fail() throws Exception {
+		JSONObject requestJson = new JSONObject();
+		requestJson.put("score", "A");
+
+		RequestBuilder request = MockMvcRequestBuilders.post("/grade/course/99999/student/3")
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson.toString());
+
+		mockMvc.perform(request)
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().string(not(emptyString())));
 	}
 
 	@Test
@@ -657,7 +682,9 @@ class GradeSubmissionApplicationTests {
 				.content(requestJson.toString());
 
 		mockMvc.perform(request)
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().string(not(emptyString())));
 	}
 
 	@Test
@@ -666,9 +693,19 @@ class GradeSubmissionApplicationTests {
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
-				.andExpect(status().is2xxSuccessful())
 				.andExpect(status().isNoContent())
 				.andExpect(content().string(emptyString()));
+	}
+
+	@Test
+	public void testDeleteGradeNotFound_Fail() throws Exception {
+		RequestBuilder request = MockMvcRequestBuilders.delete("/grade/course/99999/student/1")
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
+
+		mockMvc.perform(request)
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().string(not(emptyString())));
 	}
 
 	@Test
@@ -677,7 +714,7 @@ class GradeSubmissionApplicationTests {
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
-				.andExpect(status().is2xxSuccessful())
+				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(jsonPath("$", hasSize(1)))
@@ -693,28 +730,14 @@ class GradeSubmissionApplicationTests {
 	}
 
 	@Test
-	public void testUpdateGrade_Success() throws Exception {
-		JSONObject requestJson = new JSONObject();
-		requestJson.put("score", "F");
-
-		RequestBuilder request = MockMvcRequestBuilders.put("/grade/course/2/student/2")
-				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(requestJson.toString());
+	public void testGetCourseGradesNotFound_Fail() throws Exception {
+		RequestBuilder request = MockMvcRequestBuilders.get("/grade/course/99999")
+				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
-				.andExpect(status().is2xxSuccessful())
+				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(content().string(not(emptyString())))
-				.andExpect(jsonPath("$.id").value(2))
-				.andExpect(jsonPath("$.score").value("F"))
-				.andExpect(jsonPath("$.student.id").value("2"))
-				.andExpect(jsonPath("$.student.name").value("Ron Weasley"))
-				.andExpect(jsonPath("$.student.birthDate").value("1980-03-01"))
-				.andExpect(jsonPath("$.course.id").value("2"))
-				.andExpect(jsonPath("$.course.subject").value("Subject2"))
-				.andExpect(jsonPath("$.course.code").value("CODE2"))
-				.andExpect(jsonPath("$.course.description").value("Description2"));
+				.andExpect(content().string(not(emptyString())));
 	}
 
 	@Test
@@ -728,7 +751,7 @@ class GradeSubmissionApplicationTests {
 				.content(requestJson.toString());
 
 		mockMvc.perform(request)
-				.andExpect(status().is2xxSuccessful())
+				.andExpect(status().isCreated())
 				.andExpect(content().string(emptyString()));
 	}
 
@@ -743,7 +766,7 @@ class GradeSubmissionApplicationTests {
 				.content(requestJson.toString());
 
 		mockMvc.perform(request)
-				.andExpect(status().is4xxClientError())
+				.andExpect(status().isConflict())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(jsonPath("$.message[0]").value(containsString("Username already exists")));
@@ -755,7 +778,7 @@ class GradeSubmissionApplicationTests {
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + token);
 
 		mockMvc.perform(request)
-				.andExpect(status().is2xxSuccessful())
+				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(content().string("User"));
@@ -783,7 +806,7 @@ class GradeSubmissionApplicationTests {
 				.content(requestJson.toString());
 
 		mockMvc.perform(request)
-				.andExpect(status().is4xxClientError())
+				.andExpect(status().isBadRequest())
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(content().string("BAD REQUEST"));
 	}
@@ -799,7 +822,7 @@ class GradeSubmissionApplicationTests {
 				.content(requestJson.toString());
 
 		mockMvc.perform(request)
-				.andExpect(status().is4xxClientError())
+				.andExpect(status().isNotFound())
 				.andExpect(content().string(not(emptyString())))
 				.andExpect(content().string("Username doesn't exist"));
 	}
@@ -810,7 +833,8 @@ class GradeSubmissionApplicationTests {
 				.header(SecurityConstants.AUTHORIZATION, SecurityConstants.BEARER + invalidToken);
 
 		mockMvc.perform(request)
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().isForbidden())
+				.andExpect(content().string(not(emptyString())));
 	}
 
 }

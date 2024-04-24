@@ -68,18 +68,6 @@ public class GradeController {
         return new ResponseEntity<>(gradeService.saveGrade(Grade, courseId, studentId), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Update grade", description = "Updates a grade from the provided payload")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Successful grade modification", content = @Content(schema = @Schema(implementation = Grade.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "There is no grade for that course and student", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @PutMapping(value = "course/{courseId}/student/{studentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Grade> updateGrade(@Valid @RequestBody Grade Grade, @PathVariable Long courseId, @PathVariable Long studentId) {
-        return new ResponseEntity<>(gradeService.updateGrade(Grade, courseId, studentId), HttpStatus.CREATED);
-    }
-
     @Operation(summary = "Delete grade", description = "Deletes a grade based on course and student ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Successful grade removal", content = @Content),

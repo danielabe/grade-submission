@@ -56,13 +56,6 @@ public class GradeServiceImpl implements GradeService {
     }
 
     @Override
-    public Grade updateGrade(Grade newGrade, Long courseId, Long studentId) {
-        Grade grade = getGrade(courseId, studentId);
-        grade.setScore(newGrade.getScore());
-        return gradeRepository.save(grade);
-    }
-
-    @Override
     public void deleteGrade(Long courseId, Long studentId) {
         getGrade(courseId, studentId);
         gradeRepository.deleteByCourseIdAndStudentId(courseId, studentId);

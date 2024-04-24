@@ -76,6 +76,7 @@ public class CourseController {
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Code already exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Course> updateCourse(@Valid @RequestBody Course course, @PathVariable Long id) {
