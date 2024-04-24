@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,7 +70,7 @@ public class GradeController {
     @Operation(summary = "Delete grade", description = "Deletes a grade based on course and student ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Successful grade removal", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Failed to convert type", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "There is no grade for that course and student", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
@@ -84,7 +83,7 @@ public class GradeController {
     @Operation(summary = "Get course grades", description = "Provides a list of all grades of a course")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval of grades of a course", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Grade.class)))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Failed to convert type", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })

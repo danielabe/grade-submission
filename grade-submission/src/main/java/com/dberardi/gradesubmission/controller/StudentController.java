@@ -85,7 +85,7 @@ public class StudentController {
     @Operation(summary = "Delete student", description = "Deletes a student based on an ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Successful student removal", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Failed to convert type", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
@@ -95,10 +95,10 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Get enrolled students", description = "Provides a list of all students enrolled to a course")
+    @Operation(summary = "Get courses from a student by ID", description = "Provides a list of all courses in which the student is enrolled")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful recovery of courses in which the student is enrolled", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Course.class)))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Failed to convert", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
@@ -110,7 +110,7 @@ public class StudentController {
     @Operation(summary = "Get grades by student", description = "Provides a list of all grades of a student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful recovery of grades by student", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Grade.class)))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Failed to convert type", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })

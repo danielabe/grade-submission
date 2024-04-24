@@ -63,7 +63,7 @@ public class CourseController {
             @ApiResponse(responseCode = "201", description = "Successful course creation", content = @Content(schema = @Schema(implementation = Course.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Code already exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Course> saveCourse(@Valid @RequestBody Course course) {
@@ -86,7 +86,7 @@ public class CourseController {
     @Operation(summary = "Delete course", description = "Deletes a course based on an ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Successful course removal", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Failed to convert type", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
@@ -99,7 +99,7 @@ public class CourseController {
     @Operation(summary = "Get enrolled students", description = "Provides a list of all students enrolled to a course")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval of enrolled students", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Student.class)))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Failed to convert type", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Course doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
@@ -111,7 +111,7 @@ public class CourseController {
     @Operation(summary = "Enroll a student", description = "Enrolls a student to a course")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful enrollment", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Failed to convert type", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Course or student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "409", description = "Student already enrolled", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -124,8 +124,8 @@ public class CourseController {
 
     @Operation(summary = "Unenroll a student", description = "Unenrolls a student from a course")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful unenrollment", content = @Content(schema = @Schema(implementation = Course.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "200", description = "Successful unenrollment", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Failed to convert type", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Course or student doesn't exist", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
