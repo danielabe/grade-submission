@@ -50,7 +50,7 @@ Run the project
 ## Repository :octocat:
 Link to the repository on GitHub:
 
-:link: https://github.com/danielabe/Movies-Project
+:link: https://github.com/danielabe/grade-submission
 
 ## Documentation :books:
 Link to the documentation:
